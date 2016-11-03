@@ -40,6 +40,8 @@ if [ "$1" = "start" ]; then
 
   echo "${CYAN}"
   echo "############################################################"
+  echo "     Exposed port is: $EXPOSED_PORT"
+  echo "############################################################"
   echo "     To execute commands in container you must run"
   echo "     $ scripts/development exec <command>"
   echo "############################################################"
