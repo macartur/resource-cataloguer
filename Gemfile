@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '>= 5.0.0.rc1', '< 5.1'
+gem 'rails', '~> 5.0.0.1'
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 gem 'sqlite3'
@@ -39,12 +39,12 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'rack-cors', :require => 'rack/cors'
 
 group :development, :test do
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 3.5'
 end
 
 gem 'simplecov', :require => false, :group => :test
 gem 'rest-client'
-gem 'geocoder'
+gem 'geocoder', '~> 1.3.7'
 gem 'will_paginate', '~> 3.1.0'
 
 gem 'bunny', '~> 2.5.1'
