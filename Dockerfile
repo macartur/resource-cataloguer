@@ -4,5 +4,4 @@ RUN mkdir -p /resource-cataloguer/
 ADD . /resource-cataloguer/
 WORKDIR /resource-cataloguer/
 RUN bundle install
-RUN bundle exec rake db:migrate:reset
 CMD [ "bundle","exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]

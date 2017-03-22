@@ -7,8 +7,6 @@ class BasicResource < ApplicationRecord
   validates :lat, presence: true, numericality: true
   validates :lon, presence: true, numericality: true
   validates :status, presence: true
-  validates :collect_interval, presence: true, numericality: true
-  validates :uri, presence: true, uniqueness: true
 
   def self.all_sensors
     joins(:capabilities).where("capabilities.function" => Capability.sensor_index)

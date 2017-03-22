@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  postgres:
+    container_name: resource-cataloguer-pg
+    image: 'postgres:9.5'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'admin'
+  resource-cataloguer:
+    container_name: resource-cataloguer
+    depends_on:
+      - 'postgres'
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - '.:/resource-cataloguer'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_HOST: 'resource-cataloguer-pg'
+      POSTGRES_PORT: 5432
+      DATACOLLECTOR_HOST: 'data-collector:3000'
+      ACTUATORCONTROLLER_HOST: 'actuator-controller:3000'
+      RABBITMQ_HOST: 'rabbitmq'
+
+networks:
+  default:
+    external:
+      name: platform 

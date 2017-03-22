@@ -41,7 +41,7 @@ class BasicResourcesController < ApplicationController
       if capability_params[:capabilities].present?
         capability_params[:capabilities].each do |cap|
           query = Capability.where(name: cap)
-          raise if query.empty?
+          raise CapabilityNotFound if query.empty?
           resource.capabilities << query.take
         end
       end
@@ -95,7 +95,7 @@ class BasicResourcesController < ApplicationController
           resource.capabilities << query.take
         end
       end
-      notify_resource(resource, update: true)
+      notify_resource(resource, component_params, true)
     rescue
       render json: {
         error: "Error while updating basic resource"

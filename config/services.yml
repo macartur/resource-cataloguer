@@ -2,5 +2,6 @@
 
 # do not include a final slash after the URL
 services:
-  collector: "data-collector:3000"
-  actuator: "actuator-controller:3000"
+  collector: <%= ENV['DATACOLLECTOR_HOST'] %>
+  actuator: <%= ENV['ACTUATORCONTROLLER_HOST'] %>
+  rabbitmq: <%= ENV['RABBITMQ_HOST'] %>
