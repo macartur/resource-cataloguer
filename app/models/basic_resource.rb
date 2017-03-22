@@ -47,7 +47,8 @@ class BasicResource < ApplicationRecord
   end
 
   reverse_geocoded_by :lat, :lon do |obj, results|
-    if geo = results.first
+    geo = results.first
+    if geo
       obj.postal_code  = SmartCities::Location.extract_postal_code(results)
       obj.neighborhood = SmartCities::Location.get_neighborhood(geo.address_components)
       obj.city         = geo.city

@@ -13,7 +13,7 @@ module SmartCities
       if update
         topic = channel.topic('resource_update')
         message = JSON(resource.to_json)
-        key = key + '.' + params.map{|key, value| "#{key}"}.join('.') unless params.empty?
+        key = key + '.' + params.map{|k, _v | "#{k}"}.join('.') unless params.empty?
         topic.publish(message, routing_key: key)
       else # create
         topic = channel.topic('resource_create')
