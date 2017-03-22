@@ -42,3 +42,6 @@ Capability.create_actuator(name: "traffic_light_status")
 # ArduinoDemo
 Capability.create_actuator(name: "arduino_traffic_light")
 Capability.create_actuator(name: "arduino_luminosity")
+
+# Extra
+Capability.create_sensor(name: "location")

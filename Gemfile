@@ -47,3 +47,4 @@ gem 'rest-client'
 gem 'geocoder'
 gem 'will_paginate', '~> 3.1.0'
 
+gem 'bunny', '~> 2.5.1'

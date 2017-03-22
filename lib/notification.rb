@@ -1,49 +1,25 @@
 require 'rest-client'
 
 module SmartCities
-
   module Notification
+    def notify_resource(resource, params = {}, update = false)
+      conn = Bunny.new(hostname: SERVICES_CONFIG['services']['rabbitmq'])
+      conn.start
+      channel = conn.create_channel
+      key = resource.uuid
+      key = key + '.sensor' if resource.sensor?
+      key = key + '.actuator' if resource.actuator?
 
-    def notify_resource(resource, update = false)
-      Thread.new do
-        base_collector_url = SERVICES_CONFIG['services']['collector']
-        base_actuator_url = SERVICES_CONFIG['services']['actuator']
-
-        resource_path = "/resources/"
-        resource_path += resource.uuid if update
-
-        if resource.sensor?
-          begin
-            if update
-              RestClient.put base_collector_url + resource_path, json_structure(resource).to_json, content_type: 'application/json'
-            else
-              RestClient.post base_collector_url + resource_path, json_structure(resource).to_json, content_type: 'application/json'
-            end
-          rescue Exception => e
-            puts "="*80, "Could not notify Collector service on resource #{resource.id} creation/update - ERROR #{e}", "="*80
-          end
-        end
-
-        if resource.actuator?
-          begin
-            if update
-              RestClient.put base_actuator_url + resource_path, json_structure(resource, 'actuators').to_json, content_type: 'application/json'
-            else
-              RestClient.post base_actuator_url + resource_path, json_structure(resource, 'actuators').to_json, content_type: 'application/json'
-            end
-          rescue Exception => e
-            puts "="*80, "Could not notify Actuator service on resource #{resource.id} creation/update - ERROR #{e}", "="*80
-          end
-        end
+      if update
+        topic = channel.topic('resource_update')
+        message = JSON(resource.to_json)
+        key = key + '.' + params.map{|key, value| "#{key}"}.join('.') unless params.empty?
+        topic.publish(message, routing_key: key)
+      else # create
+        topic = channel.topic('resource_create')
+        message = JSON(resource.to_json)
+        topic.publish(message, routing_key: key)
       end
     end
-
-    def json_structure(resource, capabilities_function = nil)
-      {
-        data: resource.to_json(capabilities_function)
-      }
-    end
-
   end
-
 end

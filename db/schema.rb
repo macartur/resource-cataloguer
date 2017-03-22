@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20160620144534) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "basic_resources", force: :cascade do |t|
     t.string   "uri"
     t.datetime "created_at",       null: false
@@ -33,8 +36,8 @@ ActiveRecord::Schema.define(version: 20160620144534) do
   create_table "basic_resources_capabilities", id: false, force: :cascade do |t|
     t.integer "basic_resource_id"
     t.integer "capability_id"
-    t.index ["basic_resource_id"], name: "index_basic_resources_capabilities_on_basic_resource_id"
-    t.index ["capability_id"], name: "index_basic_resources_capabilities_on_capability_id"
+    t.index ["basic_resource_id"], name: "index_basic_resources_capabilities_on_basic_resource_id", using: :btree
+    t.index ["capability_id"], name: "index_basic_resources_capabilities_on_capability_id", using: :btree
   end
 
   create_table "capabilities", force: :cascade do |t|

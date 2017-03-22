@@ -124,8 +124,7 @@ describe BasicResourcesController do
               uri: "example.com",
               lat: 20,
               lon: 20,
-              status: "stopped",
-              # no collect_interval
+              # no status
           },
         },
         format: :json
