@@ -95,7 +95,8 @@ class BasicResourcesController < ApplicationController
           resource.capabilities << query.take
         end
       end
-      notify_resource(resource, component_params, true)
+      notify_resource(resource, component_params.to_h, true)
+      render json: { data: resource.to_json }, status: 204
     rescue
       render json: {
         error: "Error while updating basic resource"
