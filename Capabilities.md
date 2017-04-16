@@ -11,4 +11,5 @@ Listed based on other groups' projects
 * video-sensor
 * queue-length-sensor
 * semaphore-actuator
+* procedure
 
