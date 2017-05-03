@@ -8,7 +8,8 @@ Rails.application.routes.draw do
   get 'resources/:uuid', to: 'basic_resources#show', as: :basic_resource
   put 'resources/:uuid', to: 'basic_resources#update'
   patch 'capabilities/:name', to: 'capabilities#update'
-  #put 'capabilities/:name', to: 'capabilities#update'
+  put 'capabilities/:name', to: 'capabilities#update'
   post 'capabilities', to: 'capabilities#create'
   get 'capabilities', to: 'capabilities#index'
+  delete 'capabilities/:id', to: 'capabilities#destroy'
 end
