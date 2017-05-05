@@ -10,6 +10,7 @@ BasicResource.create(uri: "sbrubles.com")
 BasicResource.create(uri: "notsbrubles.com")
 BasicResource.create(uri: "maybesbrubles.com")
 
+
 Capability.create_sensor(name: "air-quality")
 Capability.create_sensor(name: "air-humidity")
 Capability.create_sensor(name: "parking-occupancy")
@@ -45,6 +46,3 @@ Capability.create_actuator(name: "arduino_luminosity")
 
 # Extra
 Capability.create_sensor(name: "location")
-
-# HEALTH CENTRE
-Capability.create_sensor(name: "medical_procedure")

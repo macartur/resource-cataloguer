@@ -1,12 +1,16 @@
 class Capability < ApplicationRecord
-  validates :function, inclusion: { in: 0..2 }
-  validates :name, uniqueness: true
+  validates :function, inclusion: { in: 0..2 , message: "Bad capability_type"}
+  validates :name, uniqueness: true, presence: true
   has_and_belongs_to_many :basic_resources
 
   @@TYPES = [:sensor, :actuator, :information]
   @@TYPE_INDEX = {
     sensor: 0, actuator: 1, information: 2
   }
+
+  def capability_type
+    function_symbol
+  end
 
   def function_symbol
     @@TYPES[self[:function]]
@@ -26,6 +30,10 @@ class Capability < ApplicationRecord
 
   def information?
     function? :information
+  end
+
+  def self.valid_function? function_symbol
+    @@TYPES.include? function_symbol
   end
 
   def self.function_index function_symbol
