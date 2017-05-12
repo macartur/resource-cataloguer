@@ -11,6 +11,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 # require "sprockets/railtie"
 require "rails/test_unit/railtie"
+require_relative "../app/middleware/catch_json_parse_errors"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -32,5 +33,6 @@ module ResourcesCatalog
         resource '*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
+    config.middleware.use CatchJsonParseErrors
   end
 end
