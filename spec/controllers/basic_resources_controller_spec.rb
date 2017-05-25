@@ -153,17 +153,13 @@ describe BasicResourcesController do
     end
 
     context 'fails due to malformed json' do
-
       def resourceCreation(params={})
-        BasicResource.destroy_all
-
         default_params = {
             data: {
               uri: "example.com",
               lat: 20,
               lon: 20,
               status: "stopped",
-              collect_interval: 5,
               description: "I am a dummy sensor",
               capabilities: ["temperature"]
           },
@@ -195,7 +191,6 @@ describe BasicResourcesController do
   end
 
   describe '#index_sensors' do
-
     before :each do
       get 'index_sensors', format: :json
     end
@@ -209,7 +204,6 @@ describe BasicResourcesController do
   end
 
   describe '#index_actuators' do
-
     before :each do
       get 'index_actuators', format: :json
     end
