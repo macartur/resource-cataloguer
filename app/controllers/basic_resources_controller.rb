@@ -47,10 +47,8 @@ class BasicResourcesController < ApplicationController
       end
       notify_resource(resource)
       render json: {data: resource.to_json}, status: 201, location: basic_resource_url(resource)
-    rescue
-      render json: {
-        error: "Error while creating basic resource"
-      }, status: 422
+    rescue StandardError => e
+      render json: { error: e }, status: 422
     end
   end
 

@@ -151,10 +151,46 @@ describe BasicResourcesController do
       end
       it { expect(response.status).to eq(422) }
     end
+
+    context 'fails due to malformed json' do
+      def resourceCreation(params={})
+        default_params = {
+            data: {
+              uri: "example.com",
+              lat: 20,
+              lon: 20,
+              status: "stopped",
+              description: "I am a dummy sensor",
+              capabilities: ["temperature"]
+          },
+        }
+
+        default_params[:data].merge!(params)
+
+        post 'create', params: default_params, format: :json
+      end
+
+      it 'has empty latitude' do
+        resourceCreation({"lat":nil})
+        expect(response.status).to eq(422)
+        expect(json["error"]).to eq("Validation failed: Lat can't be blank, Lat is not a number")
+      end
+
+      it 'has empty longitude' do
+        resourceCreation({"lon":nil})
+        expect(response.status).to eq(422)
+        expect(json["error"]).to eq("Validation failed: Lon can't be blank, Lon is not a number")
+      end
+
+      it 'has empty status' do
+        resourceCreation({"status":nil})
+        expect(response.status).to eq(422)
+        expect(json["error"]).to eq("Validation failed: Status can't be blank")
+      end
+    end
   end
 
   describe '#index_sensors' do
-
     before :each do
       get 'index_sensors', format: :json
     end
@@ -168,7 +204,6 @@ describe BasicResourcesController do
   end
 
   describe '#index_actuators' do
-
     before :each do
       get 'index_actuators', format: :json
     end

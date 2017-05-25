@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20170427185247) do
   create_table "capabilities", force: :cascade do |t|
     t.string  "name"
     t.integer "function"
-    t.string  "description"
+    t.text    "description"
   end
 
 end
