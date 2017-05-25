@@ -9,25 +9,19 @@ class CapabilitiesController < ApplicationController
       capabilities = Capability.all_of_function type.to_sym
     end
 
-    if capabilities.count == 0
-      render json: {error: "could not find by capability type"}, status: 400
-    else
-      render json: {capabilities: capabilities}, status: 200
-    end
+    render json: {capabilities: capabilities}, status: 200
   end
 
   #POST /capabilities
   def create
     begin
       capability_type = params[:capability_type].try(:to_sym)
-
       raise Exception.new("Bad capability_type") if capability_type.nil? or not Capability.valid_function?(capability_type)
 
       capability = Capability.create_with_function(capability_type, create_params)
-
       raise Exception.new(capability.errors.full_messages.first) if not capability.valid?
 
-      result = Capability.first.to_json(except: :function, methods: :capability_type)
+      result = capability.to_json(except: :function, methods: :capability_type)
 
       status = 201
     rescue Exception => e
@@ -43,26 +37,30 @@ class CapabilitiesController < ApplicationController
     begin
       capability = Capability.find_by_name params[:name]
       if capability == nil
-        raise "name not found"
+        raise ActiveRecord::RecordNotFound, "capability not found"
       end
+
       capability.update!(update_params)
       result = Capability.first.to_json(except: :function, methods: :capability_type)
       status = 202
-    rescue Exception => e
+    rescue ActiveRecord::RecordNotFound => e
       result = { error: e }
-      status = 400
+      status = 404
     end
     render json: result, status: status
   end
 
-  #DELETE /capabilities/:id
+  #DELETE /capabilities/:name
   def destroy
-    capability = Capability.find_by_id params[:id]
     begin
+      capability = Capability.find_by_name params[:name]
+      if capability == nil
+        raise ActiveRecord::RecordNotFound, "capability not found"
+      end
       capability.delete
-      render json: {message: "capability deleted"}, status: 200
+      render status: 204
     rescue
-      render json: {error: "no capability found"}, status: 400
+      render json: {error: "no capability found"}, status: 404
     end
   end
 
@@ -72,6 +70,6 @@ class CapabilitiesController < ApplicationController
     end
 
     def update_params
-      params.permit(:name, :description )
+      params.permit(:name, :description)
     end
 end

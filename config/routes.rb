@@ -11,5 +11,5 @@ Rails.application.routes.draw do
   put 'capabilities/:name', to: 'capabilities#update'
   post 'capabilities', to: 'capabilities#create'
   get 'capabilities', to: 'capabilities#index'
-  delete 'capabilities/:id', to: 'capabilities#destroy'
+  delete 'capabilities/:name', to: 'capabilities#destroy'
 end

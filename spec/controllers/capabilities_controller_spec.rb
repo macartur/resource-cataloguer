@@ -5,52 +5,53 @@ describe CapabilitiesController do
   let(:json) {JSON.parse(response.body)}
 
   describe '#create' do
-
-    def createType params
-      post 'create', params: params, format: :json
-    end
-
     context 'with valid params for sensor' do
       before :each do
-        createType({
+        params = {
           name: "teste0",
           description: "zero",
           capability_type: "sensor",
-          })
+        }
+        post 'create', params: params, format: :json
       end
+
       it "returns a success response" do
         expect(response.status).to eq(201)
-        expect(json["name"]).to eq("teste0")
-        expect(json["description"]).to eq("zero")
-        expect(json["capability_type"]).to eq("sensor")
       end
+
       it "is expected to respond with attributes" do
         expect(json["name"]).to eq("teste0")
         expect(json["description"]).to eq("zero")
         expect(json["capability_type"]).to eq("sensor")
         expect(json["id"]).to be_truthy
       end
+
       it "is expected to create a sensor capability in database" do
         expect(Capability.find_by_name "teste0").to be_truthy
       end
     end
+
     context 'with valid params for actuator' do
       before :each do
-        createType({
+        params = {
           name: "teste1",
           description: "one",
           capability_type: "actuator",
-          })
+        }
+        post 'create', params: params, format: :json
       end
+
       it "returns a success response" do
         expect(response.status).to eq(201)
       end
+
       it "is expected to respond with attributes" do
         expect(json["name"]).to eq("teste1")
         expect(json["description"]).to eq("one")
         expect(json["capability_type"]).to eq("actuator")
         expect(json["id"]).to be_truthy
       end
+
       it "is expected to create an actuator capability in database" do
         expect(Capability.find_by_name "teste1").to be_truthy
       end
@@ -58,22 +59,25 @@ describe CapabilitiesController do
 
     context 'with valid params for information' do
       before :each do
-        createType({
+        params = {
           name: "teste2",
           description: "two",
           capability_type: "information",
-          })
+        }
+        post 'create', params: params, format: :json
       end
 
       it "returns a success response" do
         expect(response.status).to eq(201)
       end
+
       it "is expected to respond with attributes" do
         expect(json["name"]).to eq("teste2")
         expect(json["description"]).to eq("two")
         expect(json["capability_type"]).to eq("information")
         expect(json["id"]).to be_truthy
       end
+
       it "is expected to create an information capability in database" do
         expect(Capability.find_by_name "teste2").to be_truthy
       end
@@ -81,11 +85,13 @@ describe CapabilitiesController do
 
     context 'with invalid params' do
       it "is expected to reject an invalid capability_type" do
-        createType({
+        params = {
           name: "teste_fail",
           escription: "some description",
           capability_type: "invalid"
-          })
+          }
+        post 'create', params: params, format: :json
+
         expect(response.status).to eq(400)
         expect(json["error"]).to eq("Bad capability_type")
         expect(Capability.find_by_name "teste_fail").to be_falsey
@@ -108,20 +114,25 @@ describe CapabilitiesController do
         end
 
         it "is expected to reject a creation without name" do
-          createType({
+          params = {
             description: "some description",
             capability_type: "information"
-            })
+          }
+
+          post 'create', params: params, format: :json
 
           expect(response.status).to eq(400)
           expect(json["error"]).to eq("Name can't be blank")
         end
 
         it "is expected to reject a creation without capability_type" do
-          createType({
+          params = {
             name: "teste_fail",
             description: "some description"
-            })
+          }
+
+          post 'create', params: params, format: :json
+
           expect(response.status).to eq(400)
           expect(json["error"]).to eq("Bad capability_type")
           expect(Capability.find_by_name "teste_fail").to be_falsey
@@ -152,52 +163,41 @@ describe CapabilitiesController do
       end
 
       context 'Successful' do
-        it "is expected to find all capabilities" do
+        it "returns success status" do
           get 'index'
           expect(response.status).to eq(200)
+        end
+
+        it "is expected to find all capabilities" do
+          get 'index'
           expect(json["capabilities"]).to be_truthy
           expect(json["capabilities"].count).to eq 9
         end
 
         it "is expected to find all sensors" do
-          get 'index',
-          params: {
-            capability_type: "sensor"
-          }
-          expect(response.status).to eq(200)
+          get 'index', params: {capability_type: "sensor"}
           expect(json["capabilities"]).to be_truthy
           expect(json["capabilities"].count).to eq 3
         end
 
         it "is expected to find all actuators" do
-          get 'index',
-          params: {
-            capability_type: "actuator"
-          }
-          expect(response.status).to eq(200)
+          get 'index', params: {capability_type: "actuator"}
           expect(json["capabilities"]).to be_truthy
           expect(json["capabilities"].count).to eq 3
         end
 
         it "is expected to find all information" do
-          get 'index',
-          params: {
-            capability_type: "information"
-          }
+          get 'index', params: {capability_type: "information"}
           expect(response.status).to eq(200)
           expect(json["capabilities"]).to be_truthy
           expect(json["capabilities"].count).to eq 3
         end
-      end
 
-      context 'Unsuccessful' do
-        it "is expected to reject invalid capability types" do
-          get 'index',
-          params: {
-            capability_type: "informatio"
-          }
-          expect(response.status).to eq(400)
-          expect(json["error"]).to eq "could not find by capability type"
+        it "is expected to not find any capability for invalid capability types" do
+          get 'index', params: {capability_type: "informatio"}
+          expect(response.status).to eq(200)
+          expect(json["capabilities"]).to be_truthy
+          expect(json["capabilities"].count).to eq 0
         end
       end
     end
@@ -225,8 +225,8 @@ describe CapabilitiesController do
         it "is expected reject an invalid name" do
           put 'update',
           params: {name: "Sens", description:"the best" }, format: :json
-          expect(response.status).to eq(400)
-          expect(json["error"]).to eq("name not found")
+          expect(response.status).to eq(404)
+          expect(json["error"]).to eq("capability not found")
         end
       end
     end
@@ -238,21 +238,28 @@ describe CapabilitiesController do
       end
 
       context 'Successful' do
-        it "is expected to delete a capability" do
-          delete 'destroy', params: {id: Capability.last.id }
-          expect(response.status).to eq(200)
-          expect(json["message"]).to eq("capability deleted")
-          expect(Capability.find_by_name "Sensor1").to be_falsey
+        it "is expected to be success" do
+          delete 'destroy', params: {name: Capability.last.name }
+          expect(response.status).to eq(204)
+        end
+
+        it "is expected to delete a capability on database" do
+          expect {
+            delete 'destroy', params: {name: Capability.last.name }
+          }.to change{Capability.count}.by(-1)
         end
       end
 
       context 'Unsuccessful' do
-        it "is expected to return an error if an invalid id is passed" do
-          delete 'destroy',
-          params: {id: Capability.last.id+5000 }
-          expect(response.status).to eq(400)
-          expect(json["error"]).to eq("no capability found")
-          expect(Capability.find_by_name "Sensor1").to be_truthy
+        it "is expected to return an error if an invalid name is passed" do
+          delete 'destroy', params: {name: "fake_name" }
+          expect(response.status).to eq(404)
+        end
+
+        it "does not destroy a capability on database" do
+          expect {
+            delete 'destroy', params: {name: "fake_name"}
+          }.to change{Capability.count}.by(0)
         end
       end
     end
